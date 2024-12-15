@@ -16,15 +16,18 @@ public class BombsAdder {
         this.rnd = new Random();
     }
 
-    public void run(){
+    public void run(int x, int y){
         int cells = map.getGridDimention()*map.getGridDimention();
         int div = diff.getBombDivisor();
         int bombNum = cells / div;
         while(bombNum >= 1){
-            int x = getRandomCoordinate(), y = getRandomCoordinate();
-            if(map.addBomb(x, y))
+            int a = getRandomCoordinate(), b = getRandomCoordinate();
+            if(x != -1 && y != -1 && a >= x-1 && a <= x+1 && b >= y-1 && b <=y+1)
+                continue;
+            if(map.addBomb(a, b))
                 bombNum--;
         }
+        map.CountBombs();
     }
 
     private int getRandomCoordinate(){

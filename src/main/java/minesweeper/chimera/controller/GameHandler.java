@@ -14,14 +14,19 @@ public class GameHandler {
 
     private Difficulty difficulty;
     private GameMap map;
+    private boolean started;
+    private BombsAdder adder;
     
-    public GameHandler(int gridDimention, Difficulty difficulty) {
+    public GameHandler(int gridDimention, Difficulty difficulty, boolean safeFirstMove) {
         if(gridDimention < 2)
             gridDimention = 2;
         this.difficulty = difficulty;
         this.map = new GameMap(gridDimention);
-        new BombsAdder(map, difficulty).run();
-        map.CountBombs();
+        adder = new BombsAdder(map, difficulty);
+        started = !safeFirstMove;
+        if(started){
+            adder.run(-1, -1);
+        }
     }
 
     public int getGridDimention() {
@@ -36,12 +41,16 @@ public class GameHandler {
         return new GameMapDto(map);
     }
 
-    public GameOutput execute(GameInput input){
+    public synchronized GameOutput execute(GameInput input){
         boolean exe = false;
         if(input.type() == GameInputType.FLAG){
             exe = map.setFlag(input.x(), input.y());
         }
         if(input.type() == GameInputType.SHOW){
+            if(!started){
+                started = true;
+                adder.run(input.x(), input.y());
+            }
             exe = map.show(input.x(), input.y());
         }
         GameOutputType t = map.isWin() ? GameOutputType.WIN

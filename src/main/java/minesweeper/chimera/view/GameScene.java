@@ -23,17 +23,17 @@ public class GameScene extends Scene {
     private Button[][] buttons;
     private Label label;
 
-    public GameScene(Difficulty diff, int n, Runnable back, StartCommand reset){
-        this(new BorderPane(), diff, n, back, reset);
+    public GameScene(GameOptions opt, Runnable back, StartCommand reset){
+        this(new BorderPane(), opt, back, reset);
     }
 
-    private GameScene(BorderPane root, Difficulty diff, int n, Runnable back, StartCommand reset){
-        super(root, 40*n < 300 ? 300 : 40*n, 40*n+50);
-        this.handler = new GameHandler(n, diff);
+    private GameScene(BorderPane root, GameOptions opt, Runnable back, StartCommand reset){
+        super(root, 40*opt.n() < 300 ? 300 : 40*opt.n(), 40*opt.n()+50);
+        this.handler = new GameHandler(opt.n(), opt.diff(), opt.safe());
         GridPane grid = new GridPane();
-        buttons = new Button[n][n];
-        for (int row = 0; row < n; row++) {
-            for (int col = 0; col < n; col++) {
+        buttons = new Button[opt.n()][opt.n()];
+        for (int row = 0; row < opt.n(); row++) {
+            for (int col = 0; col < opt.n(); col++) {
                 Button button = new Button();
                 button.setStyle("-fx-background-radius: 0;");
                 buttons[row][col] = button;
@@ -56,7 +56,7 @@ public class GameScene extends Scene {
         GameMapDto map = handler.getMap();
         label.setText("Hai a disposizione " + map.FlagNum + " bandiere.");
         Button resetBtn = new Button("Reset");
-        resetBtn.setOnAction(event -> reset.run(n, diff));
+        resetBtn.setOnAction(event -> reset.run(opt));
         resetBtn.setStyle("-fx-margin-left: 10px;");
         Button backBtn = new Button("Indietro");
         backBtn.setOnAction(event -> back.run());

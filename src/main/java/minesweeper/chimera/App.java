@@ -2,7 +2,7 @@ package minesweeper.chimera;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import minesweeper.chimera.model.enumeration.Difficulty;
+import minesweeper.chimera.view.GameOptions;
 import minesweeper.chimera.view.GameScene;
 import minesweeper.chimera.view.StartScene;
 
@@ -18,12 +18,12 @@ public class App extends Application {
         primaryStage.show();
     }
 
-    private void play (int dim, Difficulty diff){
-        stage.setScene(new GameScene(diff, dim, () -> reset(), (a, b) -> play(a, b)));
+    private void play (GameOptions opt){
+        stage.setScene(new GameScene(opt, () -> reset(), (o) -> play(o)));
     }
 
     private void reset(){
-        stage.setScene(new StartScene((dim, diff) -> play(dim, diff)));
+        stage.setScene(new StartScene((opt) -> play(opt)));
     }
 
     public static void run(String[] args) {
